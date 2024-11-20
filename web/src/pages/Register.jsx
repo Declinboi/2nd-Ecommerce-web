@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { FaInfoCircle, FaTimes, FaCheck } from "react-icons/fa";
+import { FaInfoCircle, FaTimes, FaCheck, FaSleigh } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import axios from "../api/axios";
 
@@ -31,21 +31,12 @@ const Register = () => {
   }, []);
 
   useEffect(() => {
-    const result = USER_REGEX.test(user);
-    console.log(user);
-    console.log(result);
-    setValidName(result);
+    setValidName(USER_REGEX.test(user));
   }, [user]);
 
   useEffect(() => {
-    const result = PWD_REGEX.test(pwd);
-    console.log(pwd);
-    console.log(result);
-    setValidPwd(result);
-
-    const match = pwd === matchPwd;
-    console.log(match);
-    setValidMatch(match);
+    setValidPwd(PWD_REGEX.test(pwd));
+    setValidMatch(pwd === matchPwd);
   }, [pwd, matchPwd]);
 
   useEffect(() => {
@@ -54,13 +45,14 @@ const Register = () => {
 
   const HandleSubmit = async (e) => {
     e.preventDefault();
-    // to prevent hacker
+
     const v1 = USER_REGEX.test(user);
     const v2 = PWD_REGEX.test(pwd);
     if (!v1 || !v2) {
-      setErrMsg("invalid entry");
+      setErrMsg("Invalid Entry");
       return;
     }
+
     try {
       const response = await axios.post(
         REGISTER_URL,
@@ -71,7 +63,6 @@ const Register = () => {
         }
       );
       console.log(response.data);
-      console.log(response.accessToken);
       setSuccess(true);
     } catch (err) {
       if (!err?.response) {
@@ -79,43 +70,59 @@ const Register = () => {
       } else if (err.response?.status === 409) {
         setErrMsg("Username Taken");
       } else {
-        setErrMsg("Registeration Failed");
+        setErrMsg("Registration Failed");
       }
       errRef.current.focus();
     }
   };
 
   return (
-    <>
+    <div className=" min-h-screen items-center justify-center bg-gray-100 pt-6">
       {success ? (
-        <div>
-          <h1 className="text-green-400 text-3xl">Successfully logged in</h1>
-          <p>
-            <Link to={"/"}> Sign In</Link>
-          </p>
+        <div className="flex flex-col items-center mt-10">
+          <h1 className="text-3xl text-green-500 font-bold mb-4">
+            Registration Successful!
+          </h1>
+          <Link
+            to="/"
+            className="text-blue-600 underline hover:text-blue-800 transition"
+          >
+            Sign In
+          </Link>
         </div>
       ) : (
-        <section className=" container   ">
+        <section className="max-w-md mx-auto mt-10 bg-white shadow-lg rounded-lg p-6">
           <p
             ref={errRef}
-            className={errMsg ? "errmsg" : "offscreen"}
+            className={
+              errMsg
+                ? "bg-red-100 text-red-600 text-center p-2 rounded mb-4"
+                : "hidden"
+            }
             aria-live="assertive"
           >
             {errMsg}
           </p>
-          <h1 className="text-3xl font-bold text-center pt-10">Register</h1>
-          <form
-            onSubmit={HandleSubmit}
-            className="lg:pt-14 pt-8 max-w-[500px] space-y-2 mx-auto bg-orange-500 rounded-md"
-          >
-            <div className="inline-flex ">
-              <label htmlFor="username" className="flex px-6 text-xl  ">
-                Username:
-                <span className={validName ? "valid" : "hidden"}>
-                  <FaCheck className="text-green-500 text-sm" />
+          <h1 className="text-2xl font-semibold text-gray-800 text-center mb-6">
+            Register
+          </h1>
+          <form onSubmit={HandleSubmit} className="space-y-4">
+            {/* Username */}
+            <div>
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Username
+                <span className={validName ? "text-green-500 ml-2" : "hidden"}>
+                  <FaCheck />
                 </span>
-                <span className={validName || !user ? "hidden" : "invalid"}>
-                  <FaTimes className="text-red-500 text-sm" />
+                <span
+                  className={
+                    validName || !user ? "hidden" : "text-red-500 ml-2"
+                  }
+                >
+                  <FaTimes />
                 </span>
               </label>
               <input
@@ -127,108 +134,114 @@ const Register = () => {
                 value={user}
                 required
                 aria-invalid={validName ? false : true}
-                aria-describedby="uidnote"
                 onFocus={() => setUserFocus(true)}
                 onBlur={() => setUserFocus(false)}
-                className="rounded-md px-4 border outline-none focus:border-red-700 w-full"
+                className="w-full mt-1 p-2 border border-gray-300 rounded focus:ring focus:ring-blue-300"
               />
-              <p
-                id="uidnote"
-                className={
-                  userFocus && user && !validName ? "instructions" : "hidden"
-                }
-              >
-                <FaInfoCircle className="text-sm"/> 4 to 24 characters. <br /> Must begin with a
-                letter.
-                <br />
-                Letters, numbers, underscores, hyphens allowed.{" "}
-              </p>
+              {userFocus && user && !validName && (
+                <p className="text-sm text-gray-500 mt-1">
+                  <FaInfoCircle className="inline-block mr-1" />4 to 24
+                  characters. Must begin with a letter. Letters, numbers,
+                  underscores, hyphens allowed.
+                </p>
+              )}
             </div>
-            <div className="inline-flex">
-              <label htmlFor="password" className="flex px-6 text-xl ">
-                Password:
-                <div className="text-sm">
 
-                <span className={validPwd ? "valid" : "hidden"}>
-                  <FaCheck className="text-green-500 text-sm" />
+            {/* Password */}
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Password
+                <span className={validPwd ? "text-green-500 ml-2" : "hidden"}>
+                  <FaCheck />
                 </span>
-                <span className={validPwd || !pwd ? "hidden" : "invalid"}>
-                  <FaTimes className="text-red-500 text-sm" />
+                <span
+                  className={validPwd || !pwd ? "hidden" : "text-red-500 ml-2"}
+                >
+                  <FaTimes />
                 </span>
-                </div>
               </label>
               <input
                 type="password"
                 id="password"
                 onChange={(e) => setPwd(e.target.value)}
+                value={pwd}
                 required
                 aria-invalid={validPwd ? false : true}
-                aria-describedby="pwdnote"
                 onFocus={() => setPwdFocus(true)}
                 onBlur={() => setPwdFocus(false)}
-                className="rounded-md px-4 border outline-none focus:border-red-700 w-full"
+                className="w-full mt-1 p-2 border border-gray-300 rounded focus:ring focus:ring-blue-300"
               />
-              <p
-                id="pwdnote"
-                className={pwdFocus &&  !validPwd ? "instructions" : "hidden"}
-              >
-                <FaInfoCircle className="text-sm"/> 8 to 24 characters. <br /> Must include
-                uppercase and lowercase letters, a number, and a special
-                character. <br /> Allowed Special characters:{" "}
-                <span aria-label="exclamation mark">!</span>
-                <span aria-label="at symbol">@</span>
-                <span aria-label="hashtag">#</span>
-                <span aria-label="dollar sign">$</span>
-                <span aria-label="percent">%</span>
-              </p>
+              {pwdFocus && !validPwd && (
+                <p className="text-sm text-gray-500 mt-1">
+                  <FaInfoCircle className="inline-block mr-1" />8 to 24
+                  characters. Must include uppercase, lowercase, a number, and a
+                  special character (!@#$%).
+                </p>
+              )}
             </div>
-            <div className="inline-flex">
-              <label htmlFor="confirm_pwd" className="flex  px-6 text-xl ">
-                Confirm Password:
-                <span className={validMatch && matchPwd ? "valid" : "hidden"}>
-                  <FaCheck className="text-green-500 text-sm" />
+
+            {/* Confirm Password */}
+            <div>
+              <label
+                htmlFor="confirm_pwd"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Confirm Password
+                <span
+                  className={
+                    validMatch && matchPwd ? "text-green-500 ml-2" : "hidden"
+                  }
+                >
+                  <FaCheck />
                 </span>
                 <span
-                  className={validMatch || !matchPwd ? "hidden" : "invalid"}
+                  className={
+                    validMatch || !matchPwd ? "hidden" : "text-red-500 ml-2"
+                  }
                 >
-                  <FaTimes className="text-red-500 text-sm" />
+                  <FaTimes />
                 </span>
               </label>
               <input
                 type="password"
                 id="confirm_pwd"
                 onChange={(e) => setMatchPwd(e.target.value)}
+                value={matchPwd}
                 required
                 aria-invalid={validMatch ? false : true}
-                aria-describedby="confirmnote"
                 onFocus={() => setMatchFocus(true)}
                 onBlur={() => setMatchFocus(false)}
-                className="rounded-md px-4 border outline-none focus:border-red-700 w-auto"
+                className="w-full mt-1 p-2 border border-gray-300 rounded focus:ring focus:ring-blue-300"
               />
-              <p
-                id="confirmnote"
-                className={
-                  matchFocus && !validMatch ? "instructions" : "hidden"
-                }
-              >
-                <FaInfoCircle className="text-sm"/> Must match the first password input field.
-              </p>
+              {matchFocus && !validMatch && (
+                <p className="text-sm text-gray-500 mt-1">
+                  <FaInfoCircle className="inline-block mr-1" />
+                  Must match the password.
+                </p>
+              )}
             </div>
+
+            {/* Submit Button */}
             <button
+              type="submit"
               disabled={!validName || !validPwd || !validMatch ? true : false}
+              className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition disabled:opacity-50"
             >
               Sign Up
             </button>
           </form>
-          <p>
-            Already Registered? <br />
-            <span>
-              <Link to="#">Sign In</Link>
-            </span>
+          <p className="text-center mt-4">
+            Already Registered?{" "}
+            <Link to="/login" className="text-blue-600 hover:underline">
+              Sign In
+            </Link>
           </p>
         </section>
       )}
-    </>
+    </div>
   );
 };
 

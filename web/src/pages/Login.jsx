@@ -45,11 +45,11 @@ const Login = () => {
       setPwd("");
       setSuccess(true);
     } catch (error) {
-      if (!err.response) {
+      if (!error.response) {
         setErrMsg("No Server Response");
-      } else if (err.response?.status === 400) {
+      } else if (error.response?.status === 400) {
         setErrMsg("Missing Username or Password");
-      } else if (err.response?.status === 401) {
+      } else if (error.response?.status === 401) {
         setErrMsg("Unauthorized");
       } else {
         setErrMsg("Login Failed");
@@ -59,28 +59,37 @@ const Login = () => {
   };
 
   return (
-    <div className="container">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
       {success ? (
-        <div>
-          <h1 className="text-green-400 text-3xl">Successfully logged in</h1>
+        <div className="bg-white p-8 rounded shadow-md text-center">
+          <h1 className="text-green-600 text-3xl font-bold mb-4">
+            Successfully logged in
+          </h1>
           <p>
-            <Link to={"/"}> Go To Home</Link>
+            <Link to={"/"} className="text-blue-500 hover:underline">
+              Go To Home
+            </Link>
           </p>
         </div>
       ) : (
-        <div className=" max-w-[600px] max-h-[600px]  ">
+        <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
           <p
             ref={errRef}
-            className={errMsg ? "errmsg" : "offscreen"}
+            className={`text-red-500 text-sm mb-4 ${errMsg ? "" : "hidden"}`}
             aria-live="assertive"
           >
             {errMsg}
           </p>
-          <h1>Sign in </h1>
+          <h1 className="text-2xl font-bold text-gray-800 mb-6">Sign In</h1>
 
-          <div className="">
-            <form onSubmit={HandleSubmit}>
-              <label htmlFor="username">Username</label>
+          <form onSubmit={HandleSubmit} className="space-y-4">
+            <div>
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Username
+              </label>
               <input
                 type="text"
                 id="username"
@@ -89,26 +98,39 @@ const Login = () => {
                 onChange={(e) => setUser(e.target.value)}
                 value={user}
                 required
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               />
-              <label htmlFor="password">Password</label>
+            </div>
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Password
+              </label>
               <input
                 type="password"
                 id="password"
                 onChange={(e) => setPwd(e.target.value)}
                 value={pwd}
                 required
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               />
+            </div>
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+            >
+              Sign In
+            </button>
+          </form>
 
-              <button>Sign in</button>
-            </form>
-
-            <p>
-              need an account? <br />
-              <span>
-                <Link to={"/register"}>Sign up</Link>
-              </span>
-            </p>
-          </div>
+          <p className="text-sm text-gray-600 mt-4">
+            Need an account? <br />
+            <Link to={"/register"} className="text-blue-500 hover:underline">
+              Sign Up
+            </Link>
+          </p>
         </div>
       )}
     </div>
