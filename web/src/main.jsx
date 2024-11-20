@@ -44,7 +44,7 @@ function AppRouter() {
           element: <Layout />,
         },
         {
-          path: "login",
+          path: "/login",
           element: <Login />,
         },
         {
