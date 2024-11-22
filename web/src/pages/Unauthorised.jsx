@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 
 const Unauthorised = () => {
   const navigate = useNavigate();
-  const goBack = navigate(-1);
+  const goBack = () => navigate(-1);
 
   return (
     <div className="min-h-screen flex flex-col  items-center justify-center bg-gray-100">
