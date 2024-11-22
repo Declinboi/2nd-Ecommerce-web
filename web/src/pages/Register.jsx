@@ -235,7 +235,7 @@ const Register = () => {
           </form>
           <p className="text-center mt-4">
             Already Registered?
-            <Link to="/login" className="text-blue-600 hover:underline">
+            <Link to="/login" className="text-blue-600 hover:underline ml-2">
               Sign In
             </Link>
           </p>

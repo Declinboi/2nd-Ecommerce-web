@@ -15,13 +15,16 @@ import Admin from "./pages/Admin.jsx";
 import Editor from "./pages/Editor.jsx";
 import Lounge from "./pages/Lounge.jsx";
 import Missing from "./pages/Missing.jsx";
-import {AuthProvider} from "./Context/AuthProvider.jsx";
+import { AuthProvider } from "./Context/AuthProvider.jsx";
+import RequiredAuth from "./components/RequiredAuth.jsx";
 // import "slick-carousel/slick/slick.css";
 // import "slick-carousel/slick/slick-theme.css";
 
-
-
-
+const ROLES = {
+  User: 2001,
+  Editor: 1984,
+  Admin: 5150,
+};
 
 function AppRouter() {
   const router = createBrowserRouter([
@@ -29,62 +32,38 @@ function AppRouter() {
       path: "/",
       element: <App />,
       children: [
+        { path: "/", element: <Home /> },
+        { path: "/login", element: <Login /> },
+        { path: "/register", element: <Register /> },
+        { path: "/unauthorised", element: <Unauthorised /> },
+
+        // Protected routes in a wrapper
         {
-          path: "/",
-          element: <Home />,
+          element: <RequiredAuth allowedRoles={[ROLES.User, ROLES.Admin, ROLES.Editor]} />, 
+          children: [
+            { path: "/linkpage", element: <Linkpage /> },
+            { path: "/contact", element: <Contact /> },
+          ],
         },
 
         {
-          path: "/contact",
-          element: <Contact />,
+          element: <RequiredAuth allowedRoles={[ROLES.Editor, ROLES.Admin]} />, // Wrapper for protected routes
+          children: [
+            { path: "/editor", element: <Editor /> },
+            { path: "/lounge", element: <Lounge /> },
+            { path: "/layout", element: <Layout /> },
+          ],
         },
 
         {
-          path: "layout",
-          element: <Layout />,
+          element: <RequiredAuth allowedRoles={[ROLES.Admin]} />, // Wrapper for protected routes
+          children: [
+            { path: "/admin", element: <Admin /> },
+            { path: "/protected", element: <Protected /> },
+            { path: "/*", element: <Missing /> },
+          ],
         },
-        {
-          path: "/login",
-          element: <Login />,
-        },
-        {
-          path: "protected",
-          element: <Protected />,
-        },
-        {
-          path: "linkpage",
-          element: <Linkpage />,
-        },
-        {
-          path: "unauthorised",
-          element: <Unauthorised />,
-        },
-        {
-          path: "editor",
-          element: <Editor />,
-        },
-        {
-          path: "admin",
-          element: <Admin />,
-        },
-        {
-          path: "lounge",
-          element: <Lounge />,
-        },
-        {
-          path: "*",
-          element: <Missing />,
-        },
-
-        {
-          path: "/register",
-          element: <Register />,
-        },
-        // {
-        //   path: "/blogs/:id",
-        //   element: <Singlepost/>,
-        //   loader: ({params}) => (`Blogs ${params.id}`),
-        // },
+        
       ],
     },
   ]);
