@@ -17,6 +17,7 @@ import Lounge from "./pages/Lounge.jsx";
 import Missing from "./pages/Missing.jsx";
 import { AuthProvider } from "./Context/AuthProvider.jsx";
 import RequiredAuth from "./components/RequiredAuth.jsx";
+// import User from "./pages/User.jsx";
 // import "slick-carousel/slick/slick.css";
 // import "slick-carousel/slick/slick-theme.css";
 
@@ -36,6 +37,8 @@ function AppRouter() {
         { path: "/login", element: <Login /> },
         { path: "/register", element: <Register /> },
         { path: "/unauthorised", element: <Unauthorised /> },
+        // { path: "/user", element: <User /> },
+
 
         // Protected routes in a wrapper
         {
@@ -55,6 +58,7 @@ function AppRouter() {
           ],
         },
 
+        
         {
           element: <RequiredAuth allowedRoles={[ROLES.Admin]} />, // Wrapper for protected routes
           children: [
