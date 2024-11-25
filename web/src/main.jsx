@@ -17,6 +17,7 @@ import Lounge from "./pages/Lounge.jsx";
 import Missing from "./pages/Missing.jsx";
 import { AuthProvider } from "./Context/AuthProvider.jsx";
 import RequiredAuth from "./components/RequiredAuth.jsx";
+import PersistLogin from "./components/PersistLogin.jsx";
 // import User from "./pages/User.jsx";
 // import "slick-carousel/slick/slick.css";
 // import "slick-carousel/slick/slick-theme.css";
@@ -39,35 +40,43 @@ function AppRouter() {
         { path: "/unauthorised", element: <Unauthorised /> },
         // { path: "/user", element: <User /> },
 
-
-        // Protected routes in a wrapper
         {
-          element: <RequiredAuth allowedRoles={[ROLES.User, ROLES.Admin, ROLES.Editor]} />, 
+          element: <PersistLogin />, 
           children: [
-            { path: "/linkpage", element: <Linkpage /> },
-            { path: "/contact", element: <Contact /> },
+            // Protected routes in a wrapper
+            {
+              element: (
+                <RequiredAuth
+                  allowedRoles={[ROLES.User, ROLES.Admin, ROLES.Editor]}
+                />
+              ),
+              children: [
+                { path: "/linkpage", element: <Linkpage /> },
+                { path: "/contact", element: <Contact /> },
+              ],
+            },
+
+            {
+              element: (
+                <RequiredAuth allowedRoles={[ROLES.Editor, ROLES.Admin]} />
+              ), 
+              children: [
+                { path: "/editor", element: <Editor /> },
+                { path: "/lounge", element: <Lounge /> },
+                { path: "/layout", element: <Layout /> },
+              ],
+            },
+
+            {
+              element: <RequiredAuth allowedRoles={[ROLES.Admin]} />, 
+              children: [
+                { path: "/admin", element: <Admin /> },
+                { path: "/protected", element: <Protected /> },
+                { path: "/*", element: <Missing /> },
+              ],
+            },
           ],
         },
-
-        {
-          element: <RequiredAuth allowedRoles={[ROLES.Editor, ROLES.Admin]} />, // Wrapper for protected routes
-          children: [
-            { path: "/editor", element: <Editor /> },
-            { path: "/lounge", element: <Lounge /> },
-            { path: "/layout", element: <Layout /> },
-          ],
-        },
-
-        
-        {
-          element: <RequiredAuth allowedRoles={[ROLES.Admin]} />, // Wrapper for protected routes
-          children: [
-            { path: "/admin", element: <Admin /> },
-            { path: "/protected", element: <Protected /> },
-            { path: "/*", element: <Missing /> },
-          ],
-        },
-        
       ],
     },
   ]);

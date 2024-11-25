@@ -6,7 +6,7 @@ import useAuth from "../Hooks/useAuth";
 const LOGIN_URL = "./auth";
 
 const Login = () => {
-  const { setAuth } = useAuth();
+  const { setAuth, persist, setPersist } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
@@ -58,6 +58,14 @@ const Login = () => {
       errRef.current.focus();
     }
   };
+
+  const togglePersist = () => {
+    setPersist((prev) => !prev);
+  };
+
+  useEffect(() => {
+    localStorage.setItem("persist", persist);
+  }, [persist]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
@@ -113,6 +121,15 @@ const Login = () => {
             Sign In
           </button>
         </form>
+        <div>
+          <input
+            type="checkbox"
+            id="persist"
+            onChange={togglePersist}
+            checked={persist}
+          />
+          <label htmlFor="persist"> Remember me...</label>
+        </div>
 
         <p className=" text-gray-600 mt-4  text-center ">
           Need an account? <br />

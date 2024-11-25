@@ -3,7 +3,9 @@ import Logo from "../assets/logo.png";
 import { FaCaretDown, FaSearch } from "react-icons/fa";
 import { FaCartShopping } from "react-icons/fa6";
 import Darkmode from "./Darkmode";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import { useNavigate } from "react-router";
+import useLogout from "../Hooks/useLogout";
 
 const menuLink = [
   {
@@ -44,6 +46,13 @@ const DropdownLinks = [
 ];
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const logout = useLogout();
+
+  const signOut = async () => {
+    await logout();
+    navigate("/login");
+  };
   return (
     <div className="shadow-md bg-white dark:bg-gray-900 dark:text-white duration-200 relative z-40">
       {/* upper navbar */}
@@ -81,6 +90,14 @@ const Navbar = () => {
             {/* darkmode switch */}
             <div>
               <Darkmode />
+            </div>
+            <div className="md:flex hidden gap-x-3 ">
+              <button
+                className="bg-gradient-to-r from-orange-300 to-orange-600 transition-all duration-300 text-white px-4 py-1 rounded-full flex items-center gap-3"
+                onClick={signOut}
+              >
+                Logout
+              </button>
             </div>
           </div>
         </div>
