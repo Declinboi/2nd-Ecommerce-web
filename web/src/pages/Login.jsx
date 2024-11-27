@@ -2,11 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "../api/axios";
 import useAuth from "../Hooks/useAuth";
+import useInput from "../Hooks/useInput";
+import useToggle from "../Hooks/useToggle";
 
 const LOGIN_URL = "./auth";
 
 const Login = () => {
-  const { setAuth, persist, setPersist } = useAuth();
+  const { setAuth } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
@@ -14,9 +16,11 @@ const Login = () => {
   const userRef = useRef();
   const errRef = useRef();
 
-  const [user, setUser] = useState("");
+  const [user, userReset, userAttributeObj] = useInput("user", "");
+
   const [pwd, setPwd] = useState("");
   const [errMsg, setErrMsg] = useState("");
+  const [check, toggleCheck] = useToggle("persist", false);
 
   useEffect(() => {
     userRef.current.focus();
@@ -42,7 +46,7 @@ const Login = () => {
       const accessToken = response?.data?.accessToken;
       const roles = response?.data?.roles;
       setAuth({ user, pwd, roles, accessToken });
-      setUser("");
+      userReset();
       setPwd("");
       navigate(from, { replace: true });
     } catch (error) {
@@ -59,13 +63,13 @@ const Login = () => {
     }
   };
 
-  const togglePersist = () => {
-    setPersist((prev) => !prev);
-  };
+  // const togglePersist = () => {
+  //   setPersist((prev) => !prev);
+  // };
 
-  useEffect(() => {
-    localStorage.setItem("persist", persist);
-  }, [persist]);
+  // useEffect(() => {
+  //   localStorage.setItem("persist", persist);
+  // }, [persist]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
@@ -92,8 +96,7 @@ const Login = () => {
               id="username"
               ref={userRef}
               autoComplete="off"
-              onChange={(e) => setUser(e.target.value)}
-              value={user}
+              {...userAttributeObj}
               required
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
@@ -125,8 +128,8 @@ const Login = () => {
           <input
             type="checkbox"
             id="persist"
-            onChange={togglePersist}
-            checked={persist}
+            onChange={toggleCheck}
+            checked={check}
           />
           <label htmlFor="persist"> Remember me...</label>
         </div>

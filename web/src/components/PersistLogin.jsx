@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import useRefreshToken from "../Hooks/useRefreshToken";
 import useAuth from "../Hooks/useAuth";
 import { Outlet } from "react-router";
+import useLocalStorage from "../Hooks/useLocalStorage";
 
 const PersistLogin = () => {
   const [isLoading, setIsLoading] = useState(true);
   const refresh = useRefreshToken();
-  const { auth, persist } = useAuth();
+  const { auth } = useAuth();
+  const [persist] = useLocalStorage('persist', false)
 
   useEffect(() => {
     let isMounted = true;
