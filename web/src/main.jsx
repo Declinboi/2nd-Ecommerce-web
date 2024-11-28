@@ -18,16 +18,18 @@ import Missing from "./pages/Missing.jsx";
 import { AuthProvider } from "./Context/AuthProvider.jsx";
 import RequiredAuth from "./components/RequiredAuth.jsx";
 import PersistLogin from "./components/PersistLogin.jsx";
-import { disableReactDevTools } from '@fvilers/disable-react-devtools';
-
-if (process.env.NODE_ENV === 'production') {
-  disableReactDevTools();
-}
-
-
+import { disableReactDevTools } from "@fvilers/disable-react-devtools";
+import { Auth0Provider } from "@auth0/auth0-react";
 // import User from "./pages/User.jsx";
 // import "slick-carousel/slick/slick.css";
 // import "slick-carousel/slick/slick-theme.css";
+
+if (process.env.NODE_ENV === "production") {
+  disableReactDevTools();
+}
+
+// const domain = process.env.REACT_APP_AUTH0_DOMAIN;
+// const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
 
 const ROLES = {
   User: 2001,
@@ -36,6 +38,8 @@ const ROLES = {
 };
 
 function AppRouter() {
+
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -48,7 +52,7 @@ function AppRouter() {
         // { path: "/user", element: <User /> },
 
         {
-          element: <PersistLogin />, 
+          element: <PersistLogin />,
           children: [
             // Protected routes in a wrapper
             {
@@ -66,7 +70,7 @@ function AppRouter() {
             {
               element: (
                 <RequiredAuth allowedRoles={[ROLES.Editor, ROLES.Admin]} />
-              ), 
+              ),
               children: [
                 { path: "/editor", element: <Editor /> },
                 { path: "/lounge", element: <Lounge /> },
@@ -75,7 +79,7 @@ function AppRouter() {
             },
 
             {
-              element: <RequiredAuth allowedRoles={[ROLES.Admin]} />, 
+              element: <RequiredAuth allowedRoles={[ROLES.Admin]} />,
               children: [
                 { path: "/admin", element: <Admin /> },
                 { path: "/protected", element: <Protected /> },
@@ -92,8 +96,16 @@ function AppRouter() {
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <AuthProvider>
-      <AppRouter />
+      <Auth0Provider
+        // domain={process.env.REACT_APP_AUTH0_DOMAIN}
+        // clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
+        // authorizationParams={{
+        //   redirect_uri: window.location.origin
+        // }}
+        >
+        <AuthProvider>
+        <AppRouter />
     </AuthProvider>
+      </Auth0Provider>
   </StrictMode>
 );
