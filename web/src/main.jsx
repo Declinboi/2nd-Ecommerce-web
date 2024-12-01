@@ -20,9 +20,7 @@ import RequiredAuth from "./components/RequiredAuth.jsx";
 import PersistLogin from "./components/PersistLogin.jsx";
 import { disableReactDevTools } from "@fvilers/disable-react-devtools";
 import { Auth0Provider } from "@auth0/auth0-react";
-// import User from "./pages/User.jsx";
-// import "slick-carousel/slick/slick.css";
-// import "slick-carousel/slick/slick-theme.css";
+
 
 if (process.env.NODE_ENV === "production") {
   disableReactDevTools();
@@ -49,7 +47,6 @@ function AppRouter() {
         { path: "/login", element: <Login /> },
         { path: "/register", element: <Register /> },
         { path: "/unauthorised", element: <Unauthorised /> },
-        // { path: "/user", element: <User /> },
 
         {
           element: <PersistLogin />,

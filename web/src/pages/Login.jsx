@@ -63,13 +63,6 @@ const Login = () => {
     }
   };
 
-  // const togglePersist = () => {
-  //   setPersist((prev) => !prev);
-  // };
-
-  // useEffect(() => {
-  //   localStorage.setItem("persist", persist);
-  // }, [persist]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
